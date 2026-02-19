@@ -29,9 +29,13 @@ npx prisma migrate dev --name init
 
 # Run this in your terminal to generate your Prisma Client
 npx prisma generate
-
 ````
 
+Finally, run the app:
+
+````bash
+node app.ts 
+````
 # Ledger-based balance
 Transactions are stored in the LedgerEntry table.  No balance is stored separately.  It is calculated at the time of the request.
 
