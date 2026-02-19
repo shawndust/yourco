@@ -82,7 +82,9 @@ Ledger Entries
 The below is written for a future idempotency check:
 
 Imagine the endpoint 
-````bash POST /api/purchases
+
+````bash 
+    POST /api/purchases
 ````
 supports
 ````bash
