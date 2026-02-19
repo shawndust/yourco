@@ -1,6 +1,6 @@
 # Wallet Ledger Backend
 
-This project is a simple backend service to track user purchases.  We can query for debits for items purchased, current balance, adding credits, and listing available items.
+This project is a simple backend service to track user purchases.  We can query debits for items purchased, current balance, adding credits, and listing available items.
 
 Users are not allowed to have a negative balance.  So purchases that would take their balance below zero are declined.
 
@@ -38,10 +38,10 @@ node app.ts
 ````
 
 Test the Endpoints w/ Postman or Insomnia:
-GET  /api/items - list availabe items
-POST /api/credits/:amount - add credits
-POST /api/purchases - purchase an item
-GET  /api/balance - check user balance
+- GET  /api/items - list availabe items
+- POST /api/credits/:amount - add credits
+- POST /api/purchases - purchase an item
+- GET  /api/balance - check user balance
 
 User requests need a user-id sent along:
 
@@ -51,17 +51,17 @@ User requests need a user-id sent along:
 
 User Id must be a UUID.  User balance cannot go below 0.
 
-# Ledger-based balance
+## Ledger-based balance
 Transactions are stored in the LedgerEntry table.  No balance is stored separately.  It is calculated at the time of the request.
 
 ## Concurrency-Safe
 
 To maintain concurrency safety we lock the LedgerEntry table during a transaction.  This prevents two different requests from being fulfilled at once and bringing a given customer's balance below zero.  With a users table, we would be able to lock just that user.
 
-# Price changes over time
+## Price changes over time
 When a LedgerEntry is created, it records the price of the purchased item at the time of purchase, not as a reference to some of the db row/table.  For now, it doesn't seem necessary to record the Item id as we do not use it.
 
-# Indexes
+## Indexes
 To speed up read or write transactions indexes have been created.
 
 Item Prices
@@ -76,7 +76,7 @@ Ledger Entries
 • Checking ledger transactions for a balance is then merely adding up amounts for a given user, not sorting. Also, to look up last "n" transaction will be trivial as they are chronologically sorted.
 
 
-# Idempotency 
+## Idempotency 
 
 The below is written for a future idempotency check:
 
