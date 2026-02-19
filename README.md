@@ -65,7 +65,8 @@ When a LedgerEntry is created, it records the price of the purchased item at the
 To speed up read or write transactions indexes have been created.
 
 Item Prices
-  ````bash @@index([price])
+  ````bash 
+    @@index([price])
   ````
 • Supports future price queries (for example, all items priced at 500 cents)
 • If Item price updates are infrequent relative to price lookups (for example, 1000 < price < 500 queries) then this index is ideal.  This pre-sorts the items by price in the index so lookups are much quicker.
