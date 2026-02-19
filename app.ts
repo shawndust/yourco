@@ -1,16 +1,15 @@
 import express, { json } from 'express';
-
 import type { Request, Response } from 'express'; 
-
-
-const app = express()
-const port = 3000
 import { validate as uuidValidate } from 'uuid';
-
 import 'dotenv/config'
 import { PrismaClient } from "./generated/prisma/client.ts";
 import { PrismaPg } from "@prisma/adapter-pg";
 
+const app = express()
+const port = 3000
+
+app.use(express.json()); 
+app.use(express.urlencoded({ extended: true })); 
 const connectionString = process.env.DATABASE_URL;
 
 const adapter = new PrismaPg({ connectionString });
@@ -42,16 +41,14 @@ const item3: Item = {
 
 const inventory: Item[] = [item1, item2, item3]
 
-// Middleware to check for 'x-api-key' header
+// Middleware to check for 'x-user-id' header
 const checkHeader = (req: { header: (arg0: string) => any; }, res: { status: (arg0: number) => { (): any; new(): any; json: { (arg0: { error: string; }): any; new(): any; }; }; }, next: () => void) => {
   const userId = req.header('x-user-id'); // {Link: Express.js API reference for header checking https://expressjs.com/en/guide/error-handling.html}
 
+  // Fail the request if userId is missing or not a UUID
   if (!userId) {
-    // Fail the request if header is missing
     return res.status(400).json({ error: 'Forbidden: Missing user id' });
-  }
-
-  if (!uuidValidate(userId)) {
+  } else if (!uuidValidate(userId)) {
     return res.status(400).json({ error: 'Forbidden: Invalid user id' });
   }
 
@@ -79,26 +76,19 @@ app.post('/api/credits/:amount', checkHeader, async (req: any, res: { send: (arg
     res.send(userBalance)
 })
 
-app.post('/api/purchases/:item', checkHeader, async (req: any, res: { send: (arg0: string) => void }) => {
+app.post('/api/purchases', checkHeader, async (req: any, res: { send: (arg0: string) => void }) => {
     const userId = req.header('x-user-id')
-    const searchId = req.params.item
-    console.log(searchId)
-
+    const searchId = req.body.itemId
     const foundItem = inventory.find(item => item.id === searchId);
-
     const price = foundItem?.price
 
-    console.log(foundItem?.id)
     if (!foundItem) {
     // Fail the request if item does not exist
     return res.status(404).json({ error: 'Forbidden: Invalid item' });
   } else if (await checkUserBalance(userId) < foundItem.price) {
       return res.status(409).json({ error: 'Insufficent balance' });
   } else {
-    console.log("heeeeeeeey")
-    console.log(userId, foundItem, foundItem.price)
     subtractFromLedger(userId, foundItem.price)
-    console.log("we're back")
   }
     // res.status(204)
 
