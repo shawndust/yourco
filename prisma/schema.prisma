@@ -12,3 +12,23 @@ generator client {
 datasource db {
   provider = "postgresql"
 }
+
+model Purchase {
+  id Int @id @default(autoincrement())
+  itemId String
+  userId String
+}
+
+model Item {
+  id Int @id @default(autoincrement())
+  name String @unique
+  price Int
+}
+
+model LedgerEntry {
+  id Int @id @default(autoincrement())
+  amount Int 
+  userId String
+}
+
+
