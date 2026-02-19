@@ -27,7 +27,6 @@ model LedgerEntry {
   createdAt DateTime @default(now())
   amount Int 
   userId String
-  item   Item
 
   @@index([userId, createdAt])
 }

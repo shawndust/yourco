@@ -10,7 +10,27 @@ The stack is NodeJS in Typescript, ExpressJS, and PostgreSQL with Prisma ORM for
 
 First, clone the git repository:
 
+````bash
+git clone https://github.com/shawndust/yourco
+````
 
+Next, install packages.
+
+````bash
+cd yourco
+npm install
+````
+
+Then, migrate the database:
+
+````bash
+# Run this in your terminal to migrate your database
+npx prisma migrate dev --name init
+
+# Run this in your terminal to generate your Prisma Client
+npx prisma generate
+
+````
 
 # Ledger-based balance
 Transactions are stored in the LedgerEntry table.  No balance is stored separately.  It is calculated at the time of the request.
