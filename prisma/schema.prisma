@@ -28,5 +28,5 @@ model LedgerEntry {
   amount Int 
   userId String
 
-  @@index([userId, createdAt])
+  @@index([userId(sort: Desc)])
 }

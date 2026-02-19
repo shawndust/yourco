@@ -58,11 +58,7 @@ const checkHeader = (req: { header: (arg0: string) => any; }, res: { status: (ar
   next();
 };
 
-app.get('/', checkHeader, (req: any, res: { send: (arg0: string) => void }) => {
-  res.send('Hello World!')
-})
-
-app.get('/api/items', checkHeader, (req: any, res: { send: (arg0: string) => void }) => {
+app.get('/api/items', (req: any, res: { send: (arg0: string) => void }) => {
   res.json(inventory)
 })
 
@@ -102,17 +98,6 @@ app.get('/api/balance', checkHeader, async (req: any, res: { send: (arg0: string
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`)
 })
-
-// // Handle server shutdown (Ctrl+C, etc.)
-// process.on('SIGINT', async () => {
-//   await prisma.$disconnect();
-//   process.exit(0);
-// });
-
-// process.on('SIGTERM', async () => {
-//   await prisma.$disconnect();
-//   process.exit(0);
-// });
 
 async function addToLedger(userId: string, amount: number) {
   const ledgerEntry = await prisma.ledgerEntry.create({

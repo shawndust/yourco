@@ -1,10 +1,10 @@
-# Ledger Backend
+# Wallet Ledger Backend
 
-This project is a simple backend service to track user purchases.  Queries can include debits (for items purchased), balance check, adding credits, and listing available items.
+This project is a simple backend service to track user purchases.  We can query for debits for items purchased, current balance, adding credits, and listing available items.
 
 Users are not allowed to have a negative balance.  So purchases that would take their balance below zero are declined.
 
-The stack is NodeJS in Typescript, ExpressJS, and PostgreSQL with Prisma ORM for the datastore.
+The stack is NodeJS (Typescript), ExpressJS, and PostgreSQL with Prisma ORM for the datastore.
 
 ## Installation
 
@@ -21,13 +21,13 @@ cd yourco
 npm install
 ````
 
-Then, migrate the database:
+Then, migrate the database (if you make any changes to the schema):
 
 ````bash
-# Run this in your terminal to migrate your database
+# Run this in your terminal to migrate the database
 npx prisma migrate dev --name init
 
-# Run this in your terminal to generate your Prisma Client
+# Run this in your terminal to generate the Prisma Client
 npx prisma generate
 ````
 
@@ -36,6 +36,21 @@ Finally, run the app:
 ````bash
 node app.ts 
 ````
+
+Test the Endpoints w/ Postman or Insomnia:
+GET  /api/items - list availabe items
+POST /api/credits/:amount - add credits
+POST /api/purchases - purchase an item
+GET  /api/balance - check user balance
+
+User requests need a user-id sent along:
+
+````bash
+  'x-user-id'
+````
+
+User Id must be a UUID.  User balance cannot go below 0.
+
 # Ledger-based balance
 Transactions are stored in the LedgerEntry table.  No balance is stored separately.  It is calculated at the time of the request.
 
@@ -55,17 +70,11 @@ Item Prices
 • If Item price updates are infrequent relative to price lookups (for example, 1000 < price < 500 queries) then this index is ideal.  This pre-sorts the items by price in the index so lookups are much quicker.
 • Though, every time an Item is added or an Item price is changed the index needs to be re-calculated.
 
-Ledger Entries
+Ledger Entries 
+  @@index([userId(sort: Desc)])
+• Doesn't use much I/O on writes as only one column is indexed.
+• Checking ledger transactions for a balance is then merely adding up amounts for a given user, not sorting. Also, to look up last "n" transaction will be trivial as they are chronologically sorted.
 
-  @@index([userId, amount])
-• Supports quick ledger lookups with index-only scans.
-• Can slow down writes.   
-
-  @@index([userId, amount])
-• Supports quick purchase history lookups.
-• Also can slow down writes.
-
-<!-- Depending on the storage involced, we could simplify these two to a composite index: @@index([userId, createdAt, amount]) and speed up writes. -->
 
 # Idempotency 
 
