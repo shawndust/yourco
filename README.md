@@ -46,7 +46,7 @@ Test the Endpoints w/ Postman or Insomnia:
 User requests need a user-id sent along:
 
 ````bash
-  'x-user-id'
+'x-user-id'
 ````
 
 User Id must be a UUID.  
@@ -66,7 +66,7 @@ To speed up read or write transactions indexes have been created.
 
 Item Prices
   ````bash 
-    @@index([price])
+@@index([price])
   ````
 - Supports future price queries (for example, all items priced at 500 cents)
 - If Item price updates are infrequent relative to price lookups (for example, 1000 < price < 500 queries) then this index is ideal.  This pre-sorts the items by price in the index so lookups are much quicker.
@@ -87,7 +87,7 @@ The below is written for a future idempotency check:
 Imagine the endpoint 
 
 ````bash 
-    POST /api/purchases
+POST /api/purchases
 ````
 supports
 ````bash
