@@ -73,7 +73,9 @@ Item Prices
 • Though, every time an Item is added or an Item price is changed the index needs to be re-calculated.
 
 Ledger Entries 
+  ````bash
   @@index([userId(sort: Desc)])
+  ````
 • Doesn't use much I/O on writes as only one column is indexed.
 • Checking ledger transactions for a balance is then merely adding up amounts for a given user, not sorting. Also, to look up last "n" transactions or items ordered would be trivial as they are chronologically sorted.
 
